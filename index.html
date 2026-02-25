@@ -1,248 +1,306 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIRAL MEDIA | Master Admin</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<meta charset="UTF-8">
+<title>VIRAL MEDIA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        :root { --bg: #070707; --accent: #e50914; --surface: #121212; --gold: #d4af37; --green: #2bb673; --blue: #3498db; }
-        body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 20px; padding-bottom: 50px; }
-        
-        .container { max-width: 600px; margin: 0 auto; }
-        h1 { font-weight: 800; color: var(--accent); margin-bottom: 5px; }
-        p { color: #666; font-size: 0.9rem; margin-top: 0; margin-bottom: 25px; }
+<script data-ad-client="ca-pub-8752025393712030" async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
-        input, select, textarea { width: 100%; padding: 14px; margin-bottom: 12px; border-radius: 12px; border: 1px solid #222; background: #1a1a1a; color: #fff; font-size: 0.95rem; box-sizing: border-box; font-family: inherit; }
-        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: 800; cursor: pointer; transition: 0.2s; }
-        .btn-add { background: #fff; color: #000; }
-        .btn-update { background: var(--blue); color: #fff; }
+<style>
+body{
+    margin:0;
+    font-family:system-ui;
+    background:#0b0b12;
+    color:#fff;
+}
+.container{
+    max-width:480px;
+    margin:auto;
+    padding:16px;
+}
+.section-title{
+    font-weight:700;
+    margin:12px 0 10px;
+    font-size:18px;
+}
+.app-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    justify-content:center;
+    margin-bottom:20px;
+}
+.app-card{
+    background:#161623;
+    border-radius:14px;
+    padding:10px;
+    width:160px;
+    text-align:center;
+}
+.app-card img{width:100%;border-radius:12px;margin-bottom:6px;}
+.app-name{font-weight:700;font-size:14px;margin-bottom:2px;}
+.app-meta{font-size:12px;color:#aaa;margin-bottom:4px;}
+.counter{color:#00aced;font-weight:700;font-size:12px;}
+.badge{background:#00aced;color:#000;padding:2px 6px;font-size:10px;border-radius:6px;display:inline-block;margin-top:4px;}
 
-        .card-box { background: var(--surface); padding: 20px; border-radius: 18px; border: 1px solid #1f1f1f; margin-bottom: 30px; }
-        h3 { margin-top: 0; font-size: 1rem; display: flex; align-items: center; gap: 10px; }
+.install{
+    background:#00aced;
+    color:#000;
+    border-radius:8px;
+    font-size:18px;
+    font-weight:700;
+    margin:15px 0;
+    cursor:pointer;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:50px;
+    width:100%;
+    box-sizing:border-box;
+    white-space:nowrap;
+    transition: background 0.3s, transform 0.2s;
+}
+.install:active{
+    transform:scale(0.97);
+    background:#0091d6;
+}
 
-        .user-item { background: #1a1a1a; padding: 15px; border-radius: 12px; margin-bottom: 12px; border: 1px solid #222; }
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab-btn { flex: 1; padding: 12px; border-radius: 10px; background: #1a1a1a; color: #777; border: 1px solid #222; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
-        .tab-btn.active { background: #222; color: #fff; border-color: #444; }
-        
-        .version-badge { background: #222; padding: 10px; border-radius: 10px; border-left: 4px solid var(--blue); margin-bottom: 15px; font-size: 0.8rem; }
-        .history-title { font-size: 0.9rem; color: #888; margin: 20px 0 10px 5px; text-transform: uppercase; letter-spacing: 1px; }
-        
-        .id-badge { background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; color: #00b4d8; font-family: monospace; font-size: 0.8rem; }
-    </style>
+.screens{
+    display:flex;
+    gap:10px;
+    overflow-x:auto;
+    margin-top:12px;
+    padding-bottom:6px;
+}
+.screens img{
+    width:140px;
+    height:280px;
+    border-radius:12px;
+    cursor:pointer;
+    object-fit:cover;
+}
+
+.review-box{
+    background:#161623;
+    padding:12px;
+    border-radius:10px;
+    margin-top:8px;
+}
+.stars span{
+    font-size:28px;
+    cursor:pointer;
+}
+
+.social-links{
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    margin-top:20px;
+    flex-wrap:wrap;
+}
+.social-links a{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:8px 12px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:700;
+    color:#fff;
+}
+
+.disclaimer{text-align:center;color:#aaa;font-size:12px;margin-top:10px;font-style:italic;}
+.footer{text-align:center;color:#aaa;font-size:14px;margin-top:10px;padding:10px;}
+.footer span{font-weight:700;color:#00aced;}
+
+.banner{
+    text-align:center;
+    margin:12px 0;
+}
+
+#viewer{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.95);
+    z-index:999;
+    justify-content:center;
+    align-items:center;
+}
+#viewer img{
+    max-width:90%;
+    max-height:85%;
+}
+#viewer .close,#viewer .nav{
+    position:absolute;
+    font-size:28px;
+    padding:10px;
+    cursor:pointer;
+    color:#fff;
+}
+#viewer .close{right:15px;top:15px;}
+#viewer .nav.left{left:10px;top:50%;}
+#viewer .nav.right{right:10px;top:50%;}
+
+</style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>VIRAL MEDIA<span style="color:#fff; font-size: 0.8rem; font-weight: 400;"> ADMIN</span></h1>
-        <p>Subscription Control Center</p>
+<div class="container">
 
-        <div class="tabs">
-            <button id="btn-movies" class="tab-btn active" onclick="switchTab('movies', this)">CONTENT</button>
-            <button id="btn-payments" class="tab-btn" onclick="switchTab('payments', this)">PRIME</button>
-            <button id="btn-settings" class="tab-btn" onclick="switchTab('settings', this)">APP UPDATE</button>
+    <div class="banner">
+        <script>
+          atOptions = {
+            'key' : '952caf045566a8dde898a86255c9c9b0',
+            'format' : 'iframe',
+            'height' : 50,
+            'width' : 320,
+            'params' : {}
+          };
+        </script>
+        <script src="https://www.highperformanceformat.com/952caf045566a8dde898a86255c9c9b0/invoke.js"></script>
+    </div>
+
+    <div class="section-title">Click the Install button below</div>
+
+    <div class="app-row">
+      <div class="app-card">
+        <img src="logo.png" alt="VIRAL MEDIA">
+        <div class="app-name">VIRAL MEDIA</div>
+        <div class="app-meta">version 1.0.1 • 7.48 MB</div>
+        <div class="counter">⬇ 15,243 downloads</div>
+        <div class="badge">DOWNLOAD</div>
+      </div>
+    </div>
+
+    <div class="banner">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-8752025393712030"
+           data-ad-slot="1234567890"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+    </div>
+
+    <div class="social-links">
+      <a href="https://youtube.com/@technogwm" target="_blank" style="background:#ff0000;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_(2017).svg" style="width:24px;height:24px;"> youtube
+      </a>
+      <a href="https://www.facebook.com/share/1GziYMFcnK/" target="_blank" style="background:#1877F2;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" style="width:24px;height:24px;"> facebook
+      </a>
+      <a href="https://t.me/technogwm0" target="_blank" style="background:#0088cc;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" style="width:24px;height:24px;"> telegram
+      </a>
+    </div>
+
+    <hr style="margin:20px 0;border-color:#333;">
+
+    <div style="display:flex; gap:15px; align-items:flex-start; flex-wrap:wrap;">
+        <div style="flex:1; min-width:200px;">
+          <div style="font-size:22px;font-weight:700">VIRAL MEDIA</div>
+          <div style="color:#aaa;font-size:14px">version 0.81(beta version) 7.48 MB</div>
+          <div class="counter">⬇ downloads: 15,243</div>
+          <div class="install" id="installBtn" onclick="startDownload(this)">INSTALL</div>
         </div>
-
-        <div id="section-movies">
-            <div class="card-box">
-                <h3><i class="fa-solid fa-plus-circle"></i> Add Movie</h3>
-                <input type="text" id="m-title" placeholder="Movie Title">
-                <input type="text" id="m-thumb" placeholder="Thumbnail URL">
-                <input type="text" id="m-url" placeholder="Video URL">
-                <select id="m-type">
-                    <option value="false">Premium Only</option>
-                    <option value="true">Free to Watch</option>
-                </select>
-                <button class="btn btn-add" onclick="addMovie()">Upload Now</button>
-            </div>
-            <div id="movie-list"></div>
-        </div>
-
-        <div id="section-payments" style="display:none">
-            <div class="card-box">
-                <h3><i class="fa-solid fa-crown"></i> Pending Prime Requests</h3>
-                <div id="payment-list"></div>
-            </div>
-        </div>
-
-        <div id="section-settings" style="display:none">
-            <div class="card-box">
-                <h3><i class="fa-solid fa-rocket"></i> Push New Version</h3>
-                <div class="version-badge">
-                    Current Live Version: <span id="current-ver-label" style="color:var(--blue)">Loading...</span>
-                </div>
-                <input type="number" id="v-code" placeholder="Version Code (e.g., 5)">
-                <input type="text" id="v-name" placeholder="Version Name (e.g., 1.0.5)">
-                <input type="text" id="v-url" placeholder="Update URL">
-                <textarea id="v-msg" rows="3" placeholder="What's new?"></textarea>
-                <label style="font-size: 0.75rem; color:#666; display: flex; align-items: center; gap: 8px; margin-bottom: 15px;">
-                    <input type="checkbox" id="v-force" style="width: auto; margin: 0;"> Force Update?
-                </label>
-                <button class="btn btn-update" onclick="pushUpdate()">Push Update Now</button>
-            </div>
-            <div class="history-title">Update History</div>
-            <div id="update-history-list"></div>
+        
+        <div class="banner" style="margin:0 auto;">
+            <script>
+              atOptions = {
+                'key' : 'dec63110b7528b49c6aa20d03c50c61d',
+                'format' : 'iframe',
+                'height' : 300,
+                'width' : 160,
+                'params' : {}
+              };
+            </script>
+            <script src="https://www.highperformanceformat.com/dec63110b7528b49c6aa20d03c50c61d/invoke.js"></script>
         </div>
     </div>
 
+    <div class="section-title">Features</div>
+    <div class="screens">
+      <img src="screenshot1.png" onclick="openViewer(0)">
+      <img src="screenshot2.png" onclick="openViewer(1)">
+      <img src="screenshot3.png" onclick="openViewer(2)">
+    </div>
+
+    <div class="section-title">Rate this app</div>
+    <div class="review-box">
+      <div class="stars" id="stars">
+        <span onclick="rate(1)">☆</span>
+        <span onclick="rate(2)">☆</span>
+        <span onclick="rate(3)">☆</span>
+        <span onclick="rate(4)">☆</span>
+        <span onclick="rate(5)">☆</span>
+      </div>
+      <div style="color:#00aced;font-weight:700;margin-top:5px">
+        ⭐ <span id="avg">4.9</span> / 5 (<span id="votes">1291</span>)
+      </div>
+    </div>
+
+    <div class="banner">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-8752025393712030"
+           data-ad-slot="1234567891"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+    </div>
+
+    <div class="disclaimer">download</div>
+    <div class="footer">powered by <span>TECHNO GWM</span></div>
+
+</div>
+
+<div id="viewer">
+    <span class="close" onclick="closeViewer()">✕</span>
+    <span class="nav left" onclick="prev()">❮</span>
+    <img id="viewerImg">
+    <span class="nav right" onclick="next()">❯</span>
+</div>
+
 <script>
-    // --- FIREBASE CONFIG ---
-    const firebaseConfig = {
-        apiKey: "AIzaSyACds6Loqb7GGlvlC2BVPBn48tHJcohMK0",
-        authDomain: "admin-17c72.firebaseapp.com",
-        databaseURL: "https://admin-17c72-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "admin-17c72",
-        appId: "1:17952546619:android:1760af0e0ce663a3b4211e"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+let total=localStorage.getItem("rate_total")||6300;
+let count=localStorage.getItem("rate_count")||1291;
+function update(){document.getElementById("avg").innerText=(total/count).toFixed(1);document.getElementById("votes").innerText=count;}
+update();
+function rate(s){
+ total=parseInt(total)+s;
+ count=parseInt(count)+1;
+ localStorage.setItem("rate_total",total);
+ localStorage.setItem("rate_count",count);
+ document.querySelectorAll("#stars span").forEach((e,i)=>{e.innerText=i<s?"★":"☆";e.style.color="#00aced";});
+ update();
+}
 
-    function switchTab(type, el) {
-        document.getElementById('section-movies').style.display = 'none';
-        document.getElementById('section-payments').style.display = 'none';
-        document.getElementById('section-settings').style.display = 'none';
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('section-' + type).style.display = 'block';
-        el.classList.add('active');
-        
-        if(type === 'payments') loadPayments();
-        if(type === 'settings') loadCurrentVersion();
-    }
+let imgs=["screenshot1.png","screenshot2.png","screenshot3.png"];
+let i=0;
+function openViewer(x){i=x;document.getElementById("viewerImg").src=imgs[i];document.getElementById("viewer").style.display="flex";}
+function closeViewer(){document.getElementById("viewer").style.display="none";}
+function next(){i=(i+1)%imgs.length;openViewer(i);}
+function prev(){i=(i-1+imgs.length)%imgs.length;openViewer(i);}
 
-    // --- PAYMENT & PRIME LOGIC (FIXED) ---
-    function loadPayments() {
-        db.ref("payment_requests").on("value", snap => {
-            const list = document.getElementById('payment-list');
-            list.innerHTML = "";
-            const data = snap.val();
-            let hasRequests = false;
-            
-            if(data) {
-                Object.keys(data).forEach(key => {
-                    const p = data[key];
-                    if(p.status === "pending") {
-                        hasRequests = true;
-                        // Use userId from the request data
-                        const userId = p.userId || key; 
-                        list.innerHTML += `
-                            <div class="user-item">
-                                <div style="margin-bottom:8px; font-size:0.85rem;">
-                                    <div style="display:flex; justify-content:space-between;">
-                                        <b style="color:var(--gold)">${p.customerName || 'No Name'}</b>
-                                        <span class="id-badge">ID: ${userId}</span>
-                                    </div>
-                                    <div style="color:#888; margin-top:5px; font-size:0.75rem;">
-                                        UPI: ${p.customerUPI || 'N/A'} <br>
-                                        Date: ${p.requestedAt || 'N/A'}
-                                    </div>
-                                </div>
-                                <div style="display:flex; gap:10px; margin-top:10px;">
-                                    <button class="btn" style="background:var(--green); color:#fff; flex:2; padding:10px; font-size:0.75rem;" 
-                                            onclick="updatePrimeStatus('${key}', 'approved', '${userId}')">APPROVE PRIME</button>
-                                    <button class="btn" style="background:#333; color:#fff; flex:1; padding:10px; font-size:0.75rem;" 
-                                            onclick="updatePrimeStatus('${key}', 'rejected', '${userId}')">REJECT</button>
-                                </div>
-                            </div>`;
-                    }
-                });
-            }
-            if(!hasRequests) list.innerHTML = "<p style='text-align:center; color:#444;'>No pending requests</p>";
-        });
-    }
-
-    function updatePrimeStatus(requestId, status, userId) {
-        if(!confirm("Confirm " + status + " for " + userId + "?")) return;
-        
-        const updates = {};
-        updates[`payment_requests/${requestId}/status`] = status;
-
-        if(status === 'approved') {
-            // This is the key part: it updates the specific user record
-            updates[`users/${userId}/isPremium`] = true; // Match the variable used in app code
-            updates[`users/${userId}/plan`] = "Premium Unlocked";
+function startDownload(btn){
+    let installBtn = document.getElementById("installBtn");
+    let timeLeft = 60;
+    installBtn.style.pointerEvents = "none";
+    
+    let interval = setInterval(()=>{
+        installBtn.innerText = `installing... ${timeLeft}s remaining`;
+        timeLeft--;
+        if(timeLeft < 0){
+            clearInterval(interval);
+            installBtn.innerText = "redirecting...";
+            window.location.href = "https://www.mediafire.com/file/iyg34ptt1fc6oga/VIRAL+MEDIA_1.0.apk/file";
         }
+    }, 1000);
+}
 
-        db.ref().update(updates)
-            .then(() => alert("Success: User " + userId + " is now " + status))
-            .catch(err => alert("Error: " + err.message));
-    }
-
-    // --- MOVIE CONTROL ---
-    function addMovie() {
-        const title = document.getElementById('m-title').value;
-        const thumb = document.getElementById('m-thumb').value;
-        const url = document.getElementById('m-url').value;
-        const isFree = document.getElementById('m-type').value === "true";
-        if(!title || !thumb || !url) return alert("All fields required");
-        db.ref("movies").push({ title, thumb, url, isFree, timestamp: Date.now() })
-        .then(() => {
-            alert("Movie Added!");
-            document.querySelectorAll('#section-movies input').forEach(i => i.value = "");
-        });
-    }
-
-    db.ref("movies").on("value", snap => {
-        const list = document.getElementById('movie-list');
-        list.innerHTML = "";
-        const data = snap.val();
-        if(data) {
-            Object.keys(data).reverse().forEach(key => {
-                const m = data[key];
-                list.innerHTML += `
-                    <div class="user-item" style="display:flex; align-items:center; gap:15px; padding:10px;">
-                        <img src="${m.thumb}" style="width:40px; height:55px; border-radius:6px; object-fit:cover;" onerror="this.src='https://via.placeholder.com/40x55'">
-                        <div style="flex:1">
-                            <h4 style="margin:0; font-size:0.85rem">${m.title}</h4>
-                            <span style="font-size:0.65rem; color:${m.isFree ? 'var(--green)' : 'var(--gold)'}">
-                                ${m.isFree ? 'FREE' : 'PREMIUM'}
-                            </span>
-                        </div>
-                        <button onclick="if(confirm('Delete?')) db.ref('movies/${key}').remove()" style="background:none; border:none; color:#ff4444; cursor:pointer">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>`;
-            });
-        }
-    });
-
-    // --- APP UPDATE LOGIC ---
-    function loadCurrentVersion() {
-        db.ref("settings/app_update").on("value", snap => {
-            const data = snap.val();
-            if(data) document.getElementById('current-ver-label').innerText = data.versionName;
-        });
-        db.ref("update_history").on("value", snap => {
-            const list = document.getElementById('update-history-list');
-            list.innerHTML = "";
-            const data = snap.val();
-            if(data) {
-                Object.keys(data).reverse().forEach(key => {
-                    const v = data[key];
-                    list.innerHTML += `<div class="user-item">v${v.versionName} (${v.versionCode})</div>`;
-                });
-            }
-        });
-    }
-
-    function pushUpdate() {
-        const updateData = {
-            versionCode: parseInt(document.getElementById('v-code').value),
-            versionName: document.getElementById('v-name').value,
-            updateUrl: document.getElementById('v-url').value,
-            message: document.getElementById('v-msg').value,
-            forceUpdate: document.getElementById('v-force').checked,
-            timestamp: Date.now()
-        };
-        db.ref("settings/app_update").set(updateData).then(() => alert("Pushed!"));
-    }
-
-    window.onload = () => { loadPayments(); };
+(adsbygoogle = window.adsbygoogle || []).push({});
 </script>
+
 </body>
 </html>
