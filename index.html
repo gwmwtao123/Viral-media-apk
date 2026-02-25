@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIRAL MEDIA | Master Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+    <style>
+        :root { --bg: #070707; --accent: #e50914; --surface: #121212; --gold: #d4af37; --green: #2bb673; --blue: #3498db; }
+        body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 20px; padding-bottom: 50px; }
+        
+        .container { max-width: 600px; margin: 0 auto; }
+        h1 { font-weight: 800; color: var(--accent); margin-bottom: 5px; }
+        p { color: #666; font-size: 0.9rem; margin-top: 0; margin-bottom: 25px; }
+
+        input, select, textarea { width: 100%; padding: 14px; margin-bottom: 12px; border-radius: 12px; border: 1px solid #222; background: #1a1a1a; color: #fff; font-size: 0.95rem; box-sizing: border-box; font-family: inherit; }
+        .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: 800; cursor: pointer; transition: 0.2s; }
+        .btn-add { background: #fff; color: #000; }
+        .btn-update { background: var(--blue); color: #fff; }
+
+        .card-box { background: var(--surface); padding: 20px; border-radius: 18px; border: 1px solid #1f1f1f; margin-bottom: 30px; }
+        h3 { margin-top: 0; font-size: 1rem; display: flex; align-items: center; gap: 10px; }
+
+        .user-item { background: #1a1a1a; padding: 15px; border-radius: 12px; margin-bottom: 12px; border: 1px solid #222; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 12px; border-radius: 10px; background: #1a1a1a; color: #777; border: 1px solid #222; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+        .tab-btn.active { background: #222; color: #fff; border-color: #444; }
+        
+        .version-badge { background: #222; padding: 10px; border-radius: 10px; border-left: 4px solid var(--blue); margin-bottom: 15px; font-size: 0.8rem; }
+        .history-title { font-size: 0.9rem; color: #888; margin: 20px 0 10px 5px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .id-badge { background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; color: #00b4d8; font-family: monospace; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>VIRAL MEDIA<span style="color:#fff; font-size: 0.8rem; font-weight: 400;"> ADMIN</span></h1>
+        <p>Subscription Control Center</p>
+
+        <div class="tabs">
+            <button id="btn-movies" class="tab-btn active" onclick="switchTab('movies', this)">CONTENT</button>
+            <button id="btn-payments" class="tab-btn" onclick="switchTab('payments', this)">PRIME</button>
+            <button id="btn-settings" class="tab-btn" onclick="switchTab('settings', this)">APP UPDATE</button>
+        </div>
+
+        <div id="section-movies">
+            <div class="card-box">
+                <h3><i class="fa-solid fa-plus-circle"></i> Add Movie</h3>
+                <input type="text" id="m-title" placeholder="Movie Title">
+                <input type="text" id="m-thumb" placeholder="Thumbnail URL">
+                <input type="text" id="m-url" placeholder="Video URL">
+                <select id="m-type">
+                    <option value="false">Premium Only</option>
+                    <option value="true">Free to Watch</option>
+                </select>
+                <button class="btn btn-add" onclick="addMovie()">Upload Now</button>
+            </div>
+            <div id="movie-list"></div>
+        </div>
+
+        <div id="section-payments" style="display:none">
+            <div class="card-box">
+                <h3><i class="fa-solid fa-crown"></i> Pending Prime Requests</h3>
+                <div id="payment-list"></div>
+            </div>
+        </div>
+
+        <div id="section-settings" style="display:none">
+            <div class="card-box">
+                <h3><i class="fa-solid fa-rocket"></i> Push New Version</h3>
+                <div class="version-badge">
+                    Current Live Version: <span id="current-ver-label" style="color:var(--blue)">Loading...</span>
+                </div>
+                <input type="number" id="v-code" placeholder="Version Code (e.g., 5)">
+                <input type="text" id="v-name" placeholder="Version Name (e.g., 1.0.5)">
+                <input type="text" id="v-url" placeholder="Update URL">
+                <textarea id="v-msg" rows="3" placeholder="What's new?"></textarea>
+                <label style="font-size: 0.75rem; color:#666; display: flex; align-items: center; gap: 8px; margin-bottom: 15px;">
+                    <input type="checkbox" id="v-force" style="width: auto; margin: 0;"> Force Update?
+                </label>
+                <button class="btn btn-update" onclick="pushUpdate()">Push Update Now</button>
+            </div>
+            <div class="history-title">Update History</div>
+            <div id="update-history-list"></div>
+        </div>
+    </div>
+
+<script>
+    // --- FIREBASE CONFIG ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyACds6Loqb7GGlvlC2BVPBn48tHJcohMK0",
+        authDomain: "admin-17c72.firebaseapp.com",
+        databaseURL: "https://admin-17c72-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "admin-17c72",
+        appId: "1:17952546619:android:1760af0e0ce663a3b4211e"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function switchTab(type, el) {
+        document.getElementById('section-movies').style.display = 'none';
+        document.getElementById('section-payments').style.display = 'none';
+        document.getElementById('section-settings').style.display = 'none';
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('section-' + type).style.display = 'block';
+        el.classList.add('active');
+        
+        if(type === 'payments') loadPayments();
+        if(type === 'settings') loadCurrentVersion();
+    }
+
+    // --- PAYMENT & PRIME LOGIC (FIXED) ---
+    function loadPayments() {
+        db.ref("payment_requests").on("value", snap => {
+            const list = document.getElementById('payment-list');
+            list.innerHTML = "";
+            const data = snap.val();
+            let hasRequests = false;
+            
+            if(data) {
+                Object.keys(data).forEach(key => {
+                    const p = data[key];
+                    if(p.status === "pending") {
+                        hasRequests = true;
+                        // Use userId from the request data
+                        const userId = p.userId || key; 
+                        list.innerHTML += `
+                            <div class="user-item">
+                                <div style="margin-bottom:8px; font-size:0.85rem;">
+                                    <div style="display:flex; justify-content:space-between;">
+                                        <b style="color:var(--gold)">${p.customerName || 'No Name'}</b>
+                                        <span class="id-badge">ID: ${userId}</span>
+                                    </div>
+                                    <div style="color:#888; margin-top:5px; font-size:0.75rem;">
+                                        UPI: ${p.customerUPI || 'N/A'} <br>
+                                        Date: ${p.requestedAt || 'N/A'}
+                                    </div>
+                                </div>
+                                <div style="display:flex; gap:10px; margin-top:10px;">
+                                    <button class="btn" style="background:var(--green); color:#fff; flex:2; padding:10px; font-size:0.75rem;" 
+                                            onclick="updatePrimeStatus('${key}', 'approved', '${userId}')">APPROVE PRIME</button>
+                                    <button class="btn" style="background:#333; color:#fff; flex:1; padding:10px; font-size:0.75rem;" 
+                                            onclick="updatePrimeStatus('${key}', 'rejected', '${userId}')">REJECT</button>
+                                </div>
+                            </div>`;
+                    }
+                });
+            }
+            if(!hasRequests) list.innerHTML = "<p style='text-align:center; color:#444;'>No pending requests</p>";
+        });
+    }
+
+    function updatePrimeStatus(requestId, status, userId) {
+        if(!confirm("Confirm " + status + " for " + userId + "?")) return;
+        
+        const updates = {};
+        updates[`payment_requests/${requestId}/status`] = status;
+
+        if(status === 'approved') {
+            // This is the key part: it updates the specific user record
+            updates[`users/${userId}/isPremium`] = true; // Match the variable used in app code
+            updates[`users/${userId}/plan`] = "Premium Unlocked";
+        }
+
+        db.ref().update(updates)
+            .then(() => alert("Success: User " + userId + " is now " + status))
+            .catch(err => alert("Error: " + err.message));
+    }
+
+    // --- MOVIE CONTROL ---
+    function addMovie() {
+        const title = document.getElementById('m-title').value;
+        const thumb = document.getElementById('m-thumb').value;
+        const url = document.getElementById('m-url').value;
+        const isFree = document.getElementById('m-type').value === "true";
+        if(!title || !thumb || !url) return alert("All fields required");
+        db.ref("movies").push({ title, thumb, url, isFree, timestamp: Date.now() })
+        .then(() => {
+            alert("Movie Added!");
+            document.querySelectorAll('#section-movies input').forEach(i => i.value = "");
+        });
+    }
+
+    db.ref("movies").on("value", snap => {
+        const list = document.getElementById('movie-list');
+        list.innerHTML = "";
+        const data = snap.val();
+        if(data) {
+            Object.keys(data).reverse().forEach(key => {
+                const m = data[key];
+                list.innerHTML += `
+                    <div class="user-item" style="display:flex; align-items:center; gap:15px; padding:10px;">
+                        <img src="${m.thumb}" style="width:40px; height:55px; border-radius:6px; object-fit:cover;" onerror="this.src='https://via.placeholder.com/40x55'">
+                        <div style="flex:1">
+                            <h4 style="margin:0; font-size:0.85rem">${m.title}</h4>
+                            <span style="font-size:0.65rem; color:${m.isFree ? 'var(--green)' : 'var(--gold)'}">
+                                ${m.isFree ? 'FREE' : 'PREMIUM'}
+                            </span>
+                        </div>
+                        <button onclick="if(confirm('Delete?')) db.ref('movies/${key}').remove()" style="background:none; border:none; color:#ff4444; cursor:pointer">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>`;
+            });
+        }
+    });
+
+    // --- APP UPDATE LOGIC ---
+    function loadCurrentVersion() {
+        db.ref("settings/app_update").on("value", snap => {
+            const data = snap.val();
+            if(data) document.getElementById('current-ver-label').innerText = data.versionName;
+        });
+        db.ref("update_history").on("value", snap => {
+            const list = document.getElementById('update-history-list');
+            list.innerHTML = "";
+            const data = snap.val();
+            if(data) {
+                Object.keys(data).reverse().forEach(key => {
+                    const v = data[key];
+                    list.innerHTML += `<div class="user-item">v${v.versionName} (${v.versionCode})</div>`;
+                });
+            }
+        });
+    }
+
+    function pushUpdate() {
+        const updateData = {
+            versionCode: parseInt(document.getElementById('v-code').value),
+            versionName: document.getElementById('v-name').value,
+            updateUrl: document.getElementById('v-url').value,
+            message: document.getElementById('v-msg').value,
+            forceUpdate: document.getElementById('v-force').checked,
+            timestamp: Date.now()
+        };
+        db.ref("settings/app_update").set(updateData).then(() => alert("Pushed!"));
+    }
+
+    window.onload = () => { loadPayments(); };
+</script>
+</body>
+</html>
